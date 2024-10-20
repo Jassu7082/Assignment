@@ -8,7 +8,7 @@ const Searchbar = ({ onSearchChange }) => {
 
   const fetchSuggestions = async (query) => {
     const response = await axios.get(
-      `https://api.geoapify.com/v1/geocode/autocomplete?text=${query}&apiKey=YOUR_GEOAPIFY_API_KEY`
+      `https://api.geoapify.com/v1/geocode/autocomplete?text=${query}&apiKey=fee7c4806emsh9aa50f0782ebea0p126d3cjsn92af68e5e03b`
     );
     setSuggestions(response.data.features.map((item) => ({
       label: item.properties.formatted,
