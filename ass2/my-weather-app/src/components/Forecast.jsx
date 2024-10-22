@@ -48,22 +48,43 @@ const iconMap = {
   "sleet": sleet,
 };
 
+// Helper function to format date
+const formatDate = (dateString) => {
+  const options = { day: 'numeric', month: 'short', weekday: 'short' };
+  return new Date(dateString).toLocaleDateString('en-US', options);
+};
+
 // Forecast component to display weather data
 const Forecast = ({ data }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 m-4 flex flex-col items-center w-full md:w-1/2 lg:w-1/3 text-purple-600">
-      <h2 className="text-3xl font-bold mb-2">Forecast</h2>
-      {data.list.slice(0, 5).map((item, index) => (
-        <div key={index} className="text-center mb-4">
-          <p>{new Date(item.dt_txt).toLocaleString()}</p>
-          <p>Temp: {item.main.temp}°C</p>
-          <img
-            src={iconMap[item.weather[0].icon] || iconMap["01d"]} // Fallback to "clear sky" if icon not found
+    <div className="bg-white shadow-lg rounded-lg p-6 m-4 w-[3/4] md:w-3/4 lg:w-1/2 text-purple-600">
+      <h2 className="text-3xl font-bold mb-4 text-center">Forecast</h2>
+      <table className="w-full table-auto border-collapse">
+        <thead>
+          <tr className="bg-gray-200">
+            {/* <th className="p-2">Date</th>
+            <th className="p-2">Temperature (°C)</th>
+            <th className="p-2">Condition</th> */}
+          </tr>
+        </thead>
+        <tbody>
+          {data.list.slice(0, 5).map((item, index) => (
+            <tr key={index} className="text-center">
+              <td className="p-2">
+                {formatDate(item.dt_txt)}
+              </td>
+              <td className="p-2">{item.main.temp}°C</td>
+              <td className="p-2 text-center">
+              <img
+            src={iconMap[item.weather[0].icon] || iconMap["c01d"]} // Fallback to "clear sky day" if icon not found
             alt={item.weather[0].description}
-            className="w-16 h-16"
+            className="w-16 h-16 mx-auto p-2"
           />
-        </div>
-      ))}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

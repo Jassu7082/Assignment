@@ -1,31 +1,62 @@
-import { useState } from "react";
+import React, { useState } from 'react';
 
-const Searchbar = ({ onSearchChange }) => {
-  const [search, setSearch] = useState("");
+const Search = ({ onCitySelect }) => {
+  const [city, setCity] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
 
-  const handleSearch = () => {
-    if (search) {
-      onSearchChange({ label: search, value: "19.0760 72.8777" }); // Hardcoding coordinates for example
+  const handleInputChange = async (e) => {
+    setCity(e.target.value);
+    if (e.target.value.length > 2) {
+      const cities = await fetchCities(e.target.value);
+      setSuggestions(cities);
+    } else {
+      setSuggestions([]);
     }
   };
 
+  const handleCitySelect = async (suggestion) => {
+    setCity(suggestion.city); // Set the selected city name
+    setSuggestions([]);
+    await onCitySelect(suggestion); // Call the function to fetch weather data for the selected city
+  };
+
   return (
-    <div className="flex items-center justify-center mb-8">
+    <div>
       <input
         type="text"
-        className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
-        placeholder="Enter city"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        value={city}
+        onChange={handleInputChange}
+        placeholder="Search for a city..."
+        className="border p-2 w-full"
       />
-      <button
-        onClick={handleSearch}
-        className="ml-4 px-4 py-2 bg-purple-600 text-white rounded-md shadow-md hover:bg-purple-700"
-      >
-        Search
-      </button>
+      {suggestions.length > 0 && (
+        <ul className="mt-2 border rounded bg-white w-full">
+          {suggestions.map((suggestion) => (
+            <li
+              key={suggestion.id}
+              onClick={() => handleCitySelect(suggestion)}
+              className="cursor-pointer p-2 hover:bg-gray-100"
+            >
+              {suggestion.city}, {suggestion.country}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
 
-export default Searchbar;
+export default Search;
+
+const fetchCities = async (query) => {
+  const options = {
+    method: 'GET',
+    headers: {
+      'X-RapidAPI-Key': 'fee7c4806emsh9aa50f0782ebea0p126d3cjsn92af68e5e03b',
+      'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com',
+    },
+  };
+  const response = await fetch(`https://wft-geo-db.p.rapidapi.com/v1/geo/cities?namePrefix=${query}`, options);
+  const data = await response.json();
+  return data.data;
+};

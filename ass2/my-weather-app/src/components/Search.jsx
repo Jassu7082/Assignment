@@ -7,18 +7,18 @@ const Search = ({ onCitySelect }) => {
   const handleInputChange = async (e) => {
     const value = e.target.value;
     setCity(value);
-    
     if (value.length > 2) {
-      try {
-        const cities = await fetchCities(value);
-        setSuggestions(cities);
-      } catch (error) {
-        console.error("Error fetching cities:", error);
-        setSuggestions([]);
-      }
+      const cities = await fetchCities(value);
+      setSuggestions(cities);
     } else {
       setSuggestions([]);
     }
+  };
+
+  const handleCitySelect = (suggestion) => {
+    setCity(suggestion.city); // Set the selected city name
+    setSuggestions([]);
+    onCitySelect(suggestion); // Call the function to fetch weather data for the selected city
   };
 
   return (
@@ -35,7 +35,7 @@ const Search = ({ onCitySelect }) => {
           {suggestions.map((suggestion) => (
             <li
               key={suggestion.id}
-              onClick={() => onCitySelect(suggestion)}
+              onClick={() => handleCitySelect(suggestion)}
               className="cursor-pointer p-2 hover:bg-gray-100"
             >
               {suggestion.city}, {suggestion.country}
@@ -47,22 +47,17 @@ const Search = ({ onCitySelect }) => {
   );
 };
 
+export default Search;
+
 const fetchCities = async (query) => {
   const options = {
     method: 'GET',
     headers: {
-      'X-RapidAPI-Key': 'fee7c4806emsh9aa50f0782ebea0p126d3cjsn92af68e5e03b', 
+      'X-RapidAPI-Key': 'fee7c4806emsh9aa50f0782ebea0p126d3cjsn92af68e5e03b',
       'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com',
     },
   };
-
   const response = await fetch(`https://wft-geo-db.p.rapidapi.com/v1/geo/cities?namePrefix=${query}`, options);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  
   const data = await response.json();
   return data.data;
 };
-
-export default Search;

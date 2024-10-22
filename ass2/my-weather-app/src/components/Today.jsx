@@ -1,4 +1,3 @@
-// Importing all the necessary icons from WeatherIcons folder
 import clearSky from "../assets/WeatherIcons/clear_sky.png";
 import cloudy from "../assets/WeatherIcons/cloudy.png";
 import drizzle from "../assets/WeatherIcons/drizzle.png";
@@ -51,14 +50,16 @@ const iconMap = {
 const Today = ({ data }) => {
   return (
     <div className="bg-[#38bdf8] shadow-lg rounded-lg p-6 m-4 flex flex-col items-center w-full md:w-1/2 lg:w-1/3 text-purple-600">
-      <h1 className="text-5xl  mb-2">Today</h1>
+      <h1 className="text-3xl font-bold mb-4 text-white text-center">Today</h1>
+      {/* Display City Name Here */}
       <h2 className="text-3xl font-bold mb-2">{data.city}</h2>
       <p className="text-lg mb-2">Temperature: {data.main.temp}°C</p>
       <p className="text-lg mb-2">Condition: {data.weather[0].description}</p>
+      {/* Larger Weather Icon */}
       <img
         src={iconMap[data.weather[0].icon] || iconMap["01d"]}
         alt={data.weather[0].description}
-        className="w-20 h-20"
+        className="w-32 h-32"  // Adjust size here for larger icon
       />
     </div>
   );
