@@ -5,10 +5,17 @@ const Search = ({ onCitySelect }) => {
   const [suggestions, setSuggestions] = useState([]);
 
   const handleInputChange = async (e) => {
-    setCity(e.target.value);
-    if (e.target.value.length > 2) {
-      const cities = await fetchCities(e.target.value);
-      setSuggestions(cities);
+    const value = e.target.value;
+    setCity(value);
+    
+    if (value.length > 2) {
+      try {
+        const cities = await fetchCities(value);
+        setSuggestions(cities);
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+        setSuggestions([]);
+      }
     } else {
       setSuggestions([]);
     }
@@ -40,17 +47,22 @@ const Search = ({ onCitySelect }) => {
   );
 };
 
-export default Search;
-
 const fetchCities = async (query) => {
   const options = {
     method: 'GET',
     headers: {
-      'X-RapidAPI-Key': 'fee7c4806emsh9aa50f0782ebea0p126d3cjsn92af68e5e03b',
+      'X-RapidAPI-Key': 'fee7c4806emsh9aa50f0782ebea0p126d3cjsn92af68e5e03b', 
       'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com',
     },
   };
+
   const response = await fetch(`https://wft-geo-db.p.rapidapi.com/v1/geo/cities?namePrefix=${query}`, options);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  
   const data = await response.json();
   return data.data;
 };
+
+export default Search;

@@ -55,9 +55,9 @@ function App() {
   }, [lat, lon]);
 
   return (
-    <div className="min-h-screen bg-blue-200 flex flex-col justify-center items-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-blue-300 to-blue-100 flex flex-col items-center p-4">
       <Searchbar onSearchChange={handleOnSearchChange} />
-      <div className="w-full md:flex md:gap-4 md:items-center md:justify-between">
+      <div className="w-full md:flex md:gap-8 md:items-start md:justify-center">
         {currentWeather && <Today data={currentWeather} />}
         {forecast && <Forecast data={forecast} />}
       </div>
